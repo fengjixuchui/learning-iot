@@ -11,7 +11,7 @@ The name `BlueTooth` I heard comes from a Danish king named Harald Blåtand
 Gormsen who united the tribes of Denmark into a single kingdom, and the logo
 is rune skrift of his initials H and B.
 
-One master/controler and up to 7 active slaves/peripherals in what is referred
+One master/controller and up to 7 active slaves/peripherals in what is referred
 to as a piconet. But a piconet can have up to 255 parked slaves.
 
 Baseband modes in the connected state:
@@ -19,7 +19,7 @@ Baseband modes in the connected state:
   The slave is actively listening for transmissions. Consumes most power.
 
 * sniff
-  The slave becomes active periodically which allows a method reduced power
+  The slave becomes active periodically which allows for reduced power
   consumption
 
 * hold
@@ -72,9 +72,6 @@ Transmits packets within the 2.4Ghz band. The master is the party that controls
 the Frequency Hopping Spread Spectrum (FHSS) and specifies the frequency
 based upon the masters bluetooth device address, and the timing based upon
 the masters clock.
-
-L2CAP can use the control layer to control layer which can interact with the
-link manager to perform actions.
 
 #### Link Manager
 These negotiate the properites of the connection using the Link Manager
@@ -191,7 +188,7 @@ low complexity. It was designed to be an extensible framework for data exhange.
 The on-the-air wire protocol the upper protocol layers, and the application
 layers are different for BLE which makes it incompatible with Bluetooth classic.
 
-The bluetooth specification 4.0 and above specifcy two wireless technologies:
+The bluetooth specification 4.0 and above specify two wireless technologies:
 * Bluetooth Basic Rate/Enhanced Data Rate (BR/EDR) or classic Bluetooth.
 * Bluetooth Low Energy (BLE)
 
@@ -207,8 +204,8 @@ There are two was of communication, broadcasting or connections.
 With broadcasting data is sent out to any scanning device in listening range.
 This is one way communication and the sender is called the broadcaster and
 the listeners are called observers. The message that the broadcaster sends are
-called `advertising` packets and the observer repeatadly scans the preset
-frequenies to receive any of these advertising packets.
+called `advertising` packets and the observer repeatably scans the preset
+frequencies to receive any of these advertising packets.
 Broadcasting is the only way to send data to multiple devices at once.
 The advertising packet contains a 31 bit payload but it is possible to have an
 optional `Scan Response` to allow for 62 bytes.
@@ -217,7 +214,7 @@ optional `Scan Response` to allow for 62 bytes.
 Are a periodic permanent exchange of packets between two devices. Like in
 Bluetooth classic we have two roles, Central (master), and Peripheral (slave).
 A Central device will scan for `connectable advertising` packets on preset
-frequencies and one a connection is established the Central manages timing and
+frequencies and once a connection is established the Central manages timing and
 initiates the periodic data exchange.
 
 The Perhipheral sends connectable advertising packets periodically and accepts
@@ -367,7 +364,8 @@ These have a specific format in the BLE specification:
 [<Where is it used>_]<When is it used>_<What does it do>_[Version_]<How is it used>
 ```
 Notice that the `Where is it used` and `Version ` are optional. The fields are
-described below:
+described below.
+
 Where is it used:
 ```
 Is optional and the default is NONE:
@@ -402,8 +400,10 @@ Version:
 ```
 None = original version of the PDU
 EXT = extended version of the PDU
+```
 
 How is it used:
+```
 IND = An indication that does not require a reply
 REQ = A request that requires a response
 RSP = A response to a request.
@@ -775,14 +775,22 @@ Button Service`. In the attribute table we can find an attribute named
 can send a new value. For example write a Bool value of true will turn on
 LED3.
 
+### Elements
+Is an addressable entity within a node. Every node has at the very least one
+element which is called the primary element, and the rest are called secondary
+elements. There are static and do not change for as long as the node is part
+of the network. I think it can change if the device gets unprovisioned and
+then reprovisioned.
+
 ### BLE Mesh
 Is a network allowing BLE Many-to-many communication. So it is based on BLE and
 uses something called managed flooding where messages/packets will get relayed
 by nodes in the network. This is managed in that there are ways to control how
-long the message can live, and remember packets to avoid bouncing. 
+long the message can live, and nodes can remember/cache packets to avoid
+bouncing. 
 
 Devices in the mesh have difference roles. A `Node` is just a normal BLE device
-which broadcasts messages. The mesh also needs `Releay Nodes` which is what is
+which broadcasts messages. The mesh also needs `Relay Nodes` which is what it
 sounds like, a node that can receive a packet and then relay it in the network.
 The relay node needs to scan for packets continously and therefor requires a
 high amount of power so these nodes are mostly connected to a power source and
@@ -827,7 +835,7 @@ BLE but the host layer is completely different.
 
 When a device/node wants to be included in the mesh it needs to first be
 `provisioned`. This device wanting to join is called the provisionee and it will
-contact a devices that has the `Provisioning Role`.
+contact a device that has the `Provisioning Role`.
 The provisionee needs to obtain/receive the following items:
 * Unicast Address
 * Network key
@@ -836,35 +844,19 @@ The provisionee needs to obtain/receive the following items:
 * Key Refresh flag
 
 #### Unicast Address
-Is assigned during provisioning and uniquely identify a node.
+Is assigned during provisioning and uniquely identifies a single element of a
+node. We send a message to an element of a node. This was actually not clear to
+be in the begining that it is actually elements and not nodes that we are
+addressing.
 
 #### Group Address
-Is used to identify a group of nodes. There are groups that are defined by the
-Bluetooth SIG for things like All-proxies, All-friends, and All-nodes.
-But other groups can be defined during by configuring application.
+Is used to identify a group of one or more elements. There are groups that are
+defined by the Bluetooth SIG for things like All-proxies, All-friends, and
+All-nodes.  But other groups can be defined during by configuring application.
 
 #### Virtual Address
 Is an address that is assigned to one or more elements, and it can span multiple
 nodes.
-
-#### Provisioning
-This process starts with the unprovisioned device sending out a new type of
-advertisement PDU called `mesh beacon`
-
-When a provisioner discovers the mesh beacon it will send an `invitation` to the
-unprovisioned device which is also a new PDU called `provisioning invite` PDU.
-
-When the unprovisioned device receives the `provisioning invite` it will in turn
-send a `provision capabilities` PDU which include:
-* The number of elements that it has
-* The security algorightms it supports
-* Input/Ouput capabilites
-
-Next, the unprovisioned device will sends its public key to the provisioner and
-it will also send it's public key.
-
-The next step is authentication... 
-__wip__
 
 ### Connectionless Packet Switching
 Each packet contains the complete routing infomation in its header section, like
@@ -891,9 +883,9 @@ This is used for Audio frames.
 
 ## Security
 One thing to keep in mind when reading documentation related to BlueTooth
-classic and BlueTooth Low Energy. For versions 4.2 and beyond there is a type
-of connection called Secure Connections or LE Security which uses ECHF. Prior
-type of secure connection before this is called Legacy connection. 
+classic and BlueTooth Low Energy is that for versions 4.2 and beyond there is a
+type of connection called Secure Connections or LE Security which uses ECHF.
+Prior type of secure connection before this is called Legacy connection. 
 
 ```
 
@@ -952,9 +944,6 @@ GATT Client      <-------------------------           GATT Server
 BR/EDR Legacy Pairing uses E21 or E22 based on SAFER+.
 Secure Simple Pairing uses SHA-256, HMAC-SHA-256 and P-192 elliptic curve.
 LE Legacy Pairing used AES-CCM
-
-###
-
 
 ### Temporary Key (TK)
 This is a key used during pairing and its value depends on the pairing method
@@ -1076,6 +1065,11 @@ Bluetooth monitor ver 5.62
 @ MGMT Open: bluetoothd (privileged) version 1.20                                                                                            {0x0001} 0.153006
 ```
 
+### Models
+The concept of models are there to enable less data having to be specified into
+the protocol data packets. By using specific models the devices know how to
+handle messages.
+
 ### blueZ
 This is the official Linux Bluetooth Protocol Stack. It is like mentioned above
 also split into two blocks, one is the Host and the other the Controller.
@@ -1084,18 +1078,16 @@ SMP, and L2CAP. The Host and the Controller communicate using the Host
 Controller Interface which can be done using UART, USB, Secure Digital (SD), or
 3-wire UART.
 
-If the Linux computer is going to host 
-
-A linux computer is going to host GAP/GATT applications then a daemon is
+If the Linux computer is going to host GAP/GATT applications then a daemon is
 required named `bluetoothd`. And if the linux computer is going to host an
 BLE mesh node then a daemon named `bluetooth-meshd` needs to be running.
 So its one or the other, a single linux computer cannot host both at the same
 time it seems. The daemon serializes and handles all the HCI communication.
 
 Now, applications on linux do not communicate directly with these daemons but
-instead usd `dbus` which is an IPC system on linux. So an application does not
-have to include any blueZ header files but is decoupled from it by using the
-IPC/messaging and the application instead used dbus apis.
+instead use `dbus` which is an IPC system on linux. So an application does not
+have to include any blueZ header files and is decoupled from it by using the
+IPC/messaging and the application instead uses dbus apis.
 ```
  +--------------------------------------------+
  |  +------+               +------+           |
@@ -1122,11 +1114,12 @@ IPC/messaging and the application instead used dbus apis.
  
 ```
 
-The blueZ api is contains in a number of text files which can be found here:
+The blueZ api contains in a number of text files which can be found here:
 https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/doc
 
 ### D-Bus
 TODO: extract this to a separate document if it gets too long.
+
 The central concept/component in dbus is the message bus and there are two types
 , the `system` and the `session` bus.
 There is a single instance of the system bus but there is one session bus per
@@ -1155,6 +1148,8 @@ And we can monitor the session bus using:
 ```console
 $ sudo dbus-monitor --session
 ```
+For a standalone (not related to bluetooth) example of DBus see
+[learning-c/dbus](https://github.com/danbev/learning-c/tree/master/dbus).
 
 ### Node
 Is a device that has joined a mesh network, which means the device has been
@@ -1177,40 +1172,627 @@ might be to limit the time the device sends out data, but it turns out that it
 is often related to receiving updates of a setting for example. If the device
 can be have a setting changed it would need to listen/receive these messages. If
 it has to listen at certain constantly to not risk missing a message with an
-update. This is where a Friend Node comes into play which caches messages that
-are destined for the LPN device. The LPN device can then wakeup and poll for
-messages from the Friend without risking missing any messages.
+update. This is where a Friend Node, always-on device, comes into play which
+caches messages that are destined for the LPN device. The LPN device can then
+wakeup and poll for messages from the Friend without risking missing any
+messages.
 
 ### Mesh Arch
 In contast to BLE where devices connect directly to each other, in BLE-mesh
 devices use advertisements and scanning states to relay messages to each other.
 
 #### Layers:
-From bottom to to layers.
+From bottom to top layers.
 
 ##### Bluetooth Low Energy Layer
-Same as BLE and needs a BLE stack. Mesh used advertisments and scanning states
+Same as BLE and needs a BLE stack. Mesh uses advertisments and scanning states
 and the connected state when Proxy Nodes are used.
 
 ##### Bearer Layer
 Defines how different PDUs are handled. There is an Advertsing Bearer which
-handles adv and scanning states.
-There is also a GATT Bearer
+handles adv and scanning states. There is also a GATT Bearer
 
 ##### Lower Transport Layer
 This layer takes care of re-assembling packets from the bearer layer, and also
-splitting of large packets coming from the Upper Transport layer.
+splitting of large packets coming from the Upper Transport layer into multiple
+Lower Transport PDUs.
 
 ##### Upper Transport Layer
 Is responsible for handling Encryption, Decryption, Authentication, and
-Transport Control messages like heartbeats for example.
+Transport Control messages like heartbeats for example. The keys used here
+are the network keys.
+A subnet is a group of nodes that can communicate with each other if they share
+a network key.
 
 ##### Access Layer
 Handles application data format, encryption and decryption, and data
-verification.
+verification. The keys used in this layer are application keys.
 
 ##### Foundation Models Layer
 Handles network configuration and management models.
 
 ##### Models Layer
 TODO: look closer at what this actually is
+
+#### Provisioning
+This process is about adding a unprovisioned device to the mesh network. The
+unprovisioned device gets added to the network by a node (an already provisioned
+device) capable of adding it to the network. This node, the provisioner, is
+usually a PC, a phone, or a tablet.
+
+There are 5 steps involved in provision:
+##### 1) Beaconing
+The unprovisioned device sends out a message saying that it is available to be
+provisioned. This is done a new type of advertisement PDU called `mesh beacon`
+
+##### 2) Invitation
+When a provisioner discovers the mesh beacon it will send an `invitation` to the
+unprovisioned device which is also a new PDU called `provisioning invite` PDU.
+
+When the unprovisioned device receives the `provisioning invite` it will in turn
+send a `provision capabilities` PDU in response which include:
+* The number of elements that it has
+* The security algorithms it supports
+* Input/Ouput capabilites
+  - Can the device display output to the user
+  - Can the device receive an input from the user (like button or something)
+* Ability to use Out-of-Band (OOB) technology
+
+##### 3) Public Key Exchange
+When ECDH is used public keys are exchange between the provisioner and the
+unprovisioned device.
+
+##### 4) Authentication
+This step is about authenticating the unprovisioned device. How this done
+depends on the capabilities of the device.
+
+In `output OOB` the unprovisioned device might be able to display a random
+number to the user, or blink an LED, output a beep. The user then takes that
+number and inputs it to the provisioner device or confirms that it seen the
+the number of blinks, heard the number of beeps etc.
+
+In `input OOB` is when the provisioner generates a random number which is then
+entered/inputted into the unprovisioned device. 
+
+In `static OOB` k
+5.4.2.4 in Mesh Profile v1.0
+
+
+Next, the unprovisioned device will sends its public key to the provisioner and
+it will also send it's public key.
+
+The next step is authentication... 
+__wip__
+
+### Messages
+All communication in BLE mesh is done by sending messages which operate on
+states.
+
+A message is defined as having; opcode, associated parameters, and behaviour.
+
+A message has an opcode which can be a single octet, a single byte, or it can
+be two bytes (used for standard messages), or three bytes for vendor specific
+messages. So those are just the number of bytes uses for the opcode, the fewer
+bytes used for the opcode means that there is more room for other things.
+
+It is the Transport Layer that determines the total message size, which the
+opcode is part of. If the max message size if overriden then the transport layer
+will use Segmentation and Reassembly (SAR) to split the message into multiple
+packets before sending and receiving side will have to reassemble the packets
+which is a performance cost and something that is good to avoid with low powered
+devices.
+
+11 bytes are provided by the transport layer for non-segmented messages, so if
+we have a 1 byte opcode that leaves 10 bytes for the additional message, and
+for a 2 byte opcode it leaves 9 bytes, and for a 3 byte opcode it leaves 8
+bytes.
+
+### Addresses
+There are `unicast addresses`, `virtual addresses`, `group addresses`, and a
+special values that represents an unassigned address (not used in messages
+though).
+
+A `unicast` address is allocated to an element by the provisioner. These can
+appear in the source or destination address fields of a message. Messages sent
+to a unicast address are only processed by one element.
+Example:
+```
+ 00000000 00000001
+```
+
+A `group` address represents elements from one or more nodes. There are two
+types, dynamically assigned which are 0xC000-0xFEFF, and fixed addresses which
+are assigned by the SIG and divided into 5 segments
+```
+0xFFFF - All Nodes
+0xFFFC - All Proxies Nodes
+0xFFFD - All Friend Nodes
+0xFFFE - All Relay Nodes
+```
+Example:
+```
+ 11 000000 00000000
+```
+There are 16384 group addresses per mesh network. This seems like a large
+number but remember that each device can have more than one element and this
+the group addess might get used up. Virtual addresses are used to extend this
+number (at least that is my current understanding).
+
+A `virtual` address is a multicast address and can be used to address multiple
+elements on one or more nodes.
+Each virtual address represents a `Label UUID` .
+```rust
+pub struct VirtualAddress(u16);
+```
+
+Example:
+```
+     13              0
+     [ hash value    ] 
+ 10  00 0000 0000 0000
+  ↑
+10 indicate this is a virtual address
+```
+The hash value is derived from a Label UUID which is 128-bits. So if I have two
+devices that both use the same Label UUID they would get the virtual address.
+
+An `unassinged` address can look like this:
+```
+ 00000000 00000000
+```
+
+### Label UUID
+Is a 128-bit value.
+```rust
+pub struct LabelUuid {
+    uuid: [u8; 16],
+    address: VirtualAddress,
+} 
+```
+
+### Keys
+There are three types of keys, device key (DevKey), application key (AppKey),
+and network key (NetKey).
+
+The DevKey allows for secure communication between a Configuration Client and a
+single node. It is simlar to an application key as it also transfers data from
+the upper transport layer securely but this key is only know by the device and
+the Configuration Client and no other devices. The Configuration Client allows
+for new application and network keys to be distributed which can be required to
+avoid transcan attacks (where a discared device is used to retrieve the network
+and/or application keys). So the devices that are still using those network keys
+and application keys I guess can be updated using the Configuration Client in
+that case and it does not matter if someone gets access to the old keys. Hmm,
+would it be possible to still retrieve the keys to decrypt old messages?
+
+An application key is used for secure communication of application data sent
+between nodes. An appkey can only be used with a single network key. These are
+per model and each model can have a number of appkeys bound to it.
+
+The network key provides security of the lower layer for network messages. It
+allows nodes to be able to relay the packets without having access to the
+application data. Each appkey is associated with a single netkey which is called
+a key binding.
+
+So a single node will have a one devkey, one or more appkeys, and one or more
+network keys I think.
+
+
+### Configuration Client
+Is responsible for generating and distributing network and application keys and
+makes sure that devices that need to communicate with each other share the
+correct keys for both the network (Upper Transport Layer?) and access layers.
+It can also remove a node from the network, turning it back into an
+unprovisioned device. It uses the device key to communicate with the nodes (one
+for each node).
+
+### BLE Mesh example
+First we need to start the BLE Mesh Daemon, and before that we need to stop
+bluetoothd daemon which was mentioned earlier in this document:
+```console
+$ make stop-bluetoothd
+$ make start-bluetoothd-meshd
+$ sudo /usr/libexec/bluetooth/bluetooth-meshd --config . --storage ./lib --debug
+D-Bus ready
+Loading node configuration from ./lib
+mesh/mesh-mgmt.c:mesh_mgmt_list() send read index_list
+mesh/mesh.c:mesh_init() io 0x5576ed9c8080
+mesh/mesh-mgmt.c:read_index_list_cb() Number of controllers: 1
+mesh/mesh-mgmt.c:read_info_cb() hci 0 status 0x00
+mesh/mesh-mgmt.c:read_info_cb() settings: supp 0003feff curr 00000080
+mesh/mesh-io-generic.c:hci_init() Started mesh on hci 0
+mesh_ready_callback
+Added Network Interface on /org/bluez/mesh
+Hci dev 0000 removed
+```
+Notice that we passed a config parameter of `.` which will pick up the
+configuration file `config_db.json`. This file describes the mesh network which
+is called a Mesh Object.
+We will be `mesh-cfgclient` which will communicate with this daemon.
+
+Next, we can start a ble mesh example:
+```console
+$ cd ~/work/eclipse-hackaton/firmware
+$ cargo r --release
+```
+(HOST) INFO  flashing program (35 pages / 140.00 KiB)
+(HOST) INFO  success!
+────────────────────────────────────────────────────────────────────────────────
+0.119506 INFO  btmesh: starting up
+└─ btmesh_driver::{impl#1}::run_driver::{async_fn#0} @ /home/danielbevenius/.cargo/git/checkouts/btmesh-e14acedbce757b27/cd4be51/btmesh-driver/src/fmt.rs:138
+0.344207 INFO   =====================================================================
+		=  ProvisionedConfiguration                                         =
+		---------------------------------------------------------------------
+└─ btmesh_driver::storage::provisioned::{impl#2}::display @ /home/danielbevenius/.cargo/git/checkouts/btmesh-e14acedbce757b27/cd4be51/btmesh-driver/src/fmt.rs:138
+0.344238 INFO  seq: 3100
+└─ btmesh_driver::storage::provisioned::{impl#2}::display @ /home/danielbevenius/.cargo/git/checkouts/btmesh-e14acedbce757b27/cd4be51/btmesh-driver/src/fmt.rs:138
+0.344329 INFO  primary unicast address: 00ab
+└─ btmesh_driver::stack::provisioned::network::{impl#0}::display @ /home/danielbevenius/.cargo/git/checkouts/btmesh-e14acedbce757b27/cd4be51/btmesh-driver/src/fmt.rs:138
+0.344360 INFO  number of elements: 3
+```
+
+Next, start use `mesh-cfgclient`:
+```console
+$ mesh-cfgclient --config config/config_db.json
+Mesh configuration loaded from config/config_db.json
+Proxy added: org.bluez.mesh.Node1 (/org/bluez/mesh/nodeb67cef0dd1b2451fa54f8d34edba371b)
+Proxy added: org.bluez.mesh.Management1 (/org/bluez/mesh/nodeb67cef0dd1b2451fa54f8d34edba371b)
+Attached with path /org/bluez/mesh/nodeb67cef0dd1b2451fa54f8d34edba371b
+```
+From here we can list unprovisioned devices:
+```console
+[mesh-cfgclient]# list-unprovisioned 
+Unprovisioned devices:
+```
+There are none so far as we need to scan for them first:
+```console
+[mesh-cfgclient]# discover-unprovisioned on
+Unprovisioned scan started
+```
+After that we can then list the unprovisioned nodes:
+```console
+Scan result:
+	rssi = -49
+	UUID = 466349B95B3D4F50A39A04B15B0FA2F7
+	OOB = A040
+```
+We can see that the `UUID` matches our device output and in this case is
+`466349B95B3D4F50A39A04B15B0FA2F7`. We can use this UUID to provision this
+unprovisioned device so that it becomes a node using:
+```console
+[mesh-cfgclient]# provision 466349B95B3D4F50A39A04B15B0FA2F7
+Provisioning started
+Assign addresses for 3 elements
+Provisioning done:
+Mesh node:
+	UUID = FE8817CB1D0D4250B35DE88939277C3A
+	primary = 00aa
+
+
+	elements (3):
+		element 0:
+			SIG model: 0000 "Configuration Server"
+			SIG model: 1001 "Generic OnOff Client"
+			SIG model: 1003 "Generic Level Client"
+			SIG model: 100d "Generic Battery Client"
+			SIG model: 1102 "Sensor Client"
+		element 1:
+			SIG model: 1000 "Generic OnOff Server"
+		element 2:
+			SIG model: 1000 "Generic OnOff Server"
+
+```
+The provisioner has assigned a primary unicast address which is `00aa` in our
+case.
+
+Switch to the `config` menu:
+```console
+[mesh-cfgclient]# menu config
+```
+And then we set the target unicast UUID that will be used for commands:
+```console
+[mesh-cfgclient]# target 00aa
+Configuring node 00aa
+[config: Target = 00aa]#
+```
+
+#### firmware/src/main.rs walkthrough
+
+If we look at the device code:
+```rust
+use btmesh_nrf_softdevice::{BluetoothMeshDriverConfig, Driver};
+
+async fn main(_s: Spawner) {
+        ...
+
+        // An instance of the Bluetooth Mesh stack                                           
+        let mut driver = Driver::new(                                                        
+            "drogue",                                                                        
+            unsafe { &__storage as *const u8 as u32 },                                       
+            Some(unsafe { &__storage_extra as *const u8 as u32 }),                           
+            100,                                                                             
+            BluetoothMeshDriverConfig {                                                      
+                uuid: None,                                                                  
+                persist_interval: Some(Duration::from_secs(10)),                             
+            },                                                                               
+        );
+        ...
+        let _ = driver.run(&mut device).await;
+        ...
+}
+```
+Now `Driver` in this case is of type `NrfSoftdeviceAdvertisingOnlyDriver`
+because we are not specifying the `gatt` feature:
+```rust
+#[cfg(feature = "gatt")]
+  pub use driver::NrfSoftdeviceAdvertisingAndGattDriver as Driver;
+
+  #[cfg(not(feature = "gatt"))]
+  pub use driver::NrfSoftdeviceAdvertisingOnlyDriver as Driver;
+```
+So `Driver` will be of type `driver::NrfSoftdeviceAdvertisingOnlyDriver` which
+we can find in `btmesh-nrf-softdevice/src/driver.rs`.
+```rust
+pub struct NrfSoftdeviceAdvertisingOnlyDriver(
+      NrfSoftdeviceDriver<AdvertisingOnlyNetworkInterfaces<SoftdeviceAdvertisingBearer>>,
+);
+```
+So this is struct has one member of type `NrSoftdeviceDriver`:
+```rust
+pub struct NrfSoftdeviceDriver<N: NetworkInterfaces> {
+    sd: &'static Softdevice,
+    driver: BaseDriver<N, SoftdeviceRng, FlashBackingStore<Flash>>,
+}
+```
+So we have a Softdevice which is the of type nrf_softdevice::Softdevice which
+is the ble device from nrf, well at least then the api for it.
+Next we have the `driver` field which is of Type `BaseDriver` which is imported
+like this from btmesh_driver (btmesh-driver/src/lib.rs):
+```rust
+use btmesh_driver::{Driver as BaseDriver};
+```
+And `Driver` in btmesh-driver/src/lib.rs looks like this:
+```rust
+pub struct Driver<N: NetworkInterfaces, R: RngCore + CryptoRng, B: BackingStore> {
+    network: Option<N>,
+    rng: Option<R>,
+    storage: Storage<B>,
+    persist_interval: Option<Duration>,
+```
+If we look back at NrfSoftdeviceDriver is specified with a generic parameter:
+```rust
+    NrfSoftdeviceDriver<AdvertisingOnlyNetworkInterfaces<SoftdeviceAdvertisingBearer>>,
+```
+
+```rust
+pub struct AdvertisingOnlyNetworkInterfaces<B: AdvertisingBearer> {             
+    interface: AdvertisingBearerNetworkInterface<B>,                            
+}
+```
+There can possbily be multiple network interfaces which I think is the reason
+for NetworkInterfaces (multiple).
+
+```rust
+pub struct AdvertisingBearerNetworkInterface<B: AdvertisingBearer> {               
+    bearer: B,                                                                     
+    segmentation: Segmentation,                                                    
+    link_id: Cell<Option<u32>>,                                                    
+    inbound_transaction_number: Cell<Option<u8>>,                                  
+    acked_inbound_transaction_number: Cell<Option<u8>>,                            
+    outbound_pdu: RefCell<Option<OutboundPDU>>,                                    
+    outbound_transaction_number: Cell<u8>,                                         
+} 
+```
+The bearer in this case if `SoftdeviceAdvertisingBearer` which uses the
+softdevice.
+
+Alright so after that we now know that `Driver::new` will be calling:
+```rust
+impl NrfSoftdeviceAdvertisingOnlyDriver {
+    pub fn new(
+        name: &'static str,
+        base_address: u32,
+        extra_base_address: Option<u32>,
+        sequence_threshold: u32,
+        config: BluetoothMeshDriverConfig,
+    ) -> Self {
+        let sd: &'static Softdevice = enable_softdevice(name);
+        let rng = SoftdeviceRng::new(sd);
+        let backing_store =
+            FlashBackingStore::new(Flash::take(sd), base_address, extra_base_address, sequence_threshold);
+        let adv_bearer = SoftdeviceAdvertisingBearer::new(sd);
+
+        let network = AdvertisingOnlyNetworkInterfaces::new(adv_bearer);
+
+        Self(NrfSoftdeviceDriver::new(
+            sd,
+            network,
+            rng,
+            backing_store,
+            config,
+        ))
+    }
+```
+
+After creating NrfSoftdeviceAdvertisingOnlyDriver the last line in main.rs is:
+```rust
+    let mut device: Device = Device::new(board.btn_a, board.btn_b, display,
+        speaker, battery, sensor);
+
+    let _ = driver.run(&mut device).await;
+```
+
+And we know that `driver.run` can be found in NrfSoftdeviceAdvertisingOnlyDriver:
+```rust
+  pub async fn run<'r, D: BluetoothMeshDevice>(&'r mut self,
+      device: &'r mut D,) -> Result<(), DriverError> {
+        self.0.run(device).await
+    }
+```
+Now, `Device` is a struct in main.rs which does not implement any traits so how
+can this actually be calling this run method?
+
+```rust
+    fn run<'r, D: BluetoothMeshDevice>(&'r mut self, device: &'r mut D) -> Self::RunFuture<'_, D> {
+        async move {                                                            
+            InnerDriver::new(                                                   
+                network: unwrap!(self.network.take()),                          
+                rng: unwrap!(self.rng.take()),                                  
+                &self.storage,                                                  
+                self.persist_interval,                                          
+            ) InnerDriver<N, R, B>                                              
+            .run(device) impl Future<Output = Result<…>>                        
+            .await                                                              
+        }                                                                       
+    } 
+```
+So this is calling `InnerDriver::run`:
+```rust
+   async fn run<'r, D: BluetoothMeshDevice>(                                   
+        &'r mut self,                                                           
+        device: &'r mut D,                                                      
+    ) -> Result<(), DriverError> {                                               
+        loop {                                                                  
+            let mut composition: Composition<CompositionExtra> = device.composition();
+                                                                                
+            let mut foundation_device: FoundationDevice<B> = FoundationDevice::new(self.storage);
+                                                                                
+            let network_fut: impl Future<Output = Result<…>> = Self::run_network(&self.network);
+            ...
+```
+First notice that the loop. And Componsition contains information about the
+device (See Componsition Data).
+
+`Self::run_network` is method in InnerDriver:
+```rust
+fn run_network(network: &N) -> impl Future<Output = Result<(), NetworkError>> + '_ {
+        network.run()
+}
+```
+And recall that InnerDriver has a field named 'network` so this is calling
+the `run` function in `AdvertisingOnlyNetworkInterfaces`
+(btmesh-driver/src/interface/mod.rs):
+```rust
+
+  impl<B: AdvertisingBearer> NetworkInterfaces for AdvertisingOnlyNetworkInterfaces<B> {
+      type RunFuture<'m> = impl Future<Output=Result<(), NetworkError>> + 'm
+      where
+      Self: 'm;
+
+      fn run(&self) -> Self::RunFuture<'_> {
+          NeverEnding
+      }
+   }
+
+struct NeverEnding;
+impl Future for NeverEnding {
+    type Output = Result<(), NetworkError>;
+    fn poll(self: Pin<&mut Self>, _cx: &mut Context<'_>) -> Poll<Self::Output> {
+        Poll::Pending
+    }
+}
+```
+So the above will return a future that allways returns Pending when polled.
+Next, back in `InnerDriver::run` we have:
+```rust
+            let network_fut = Self::run_network(&self.network);                    
+            let device_fut = select(                                               
+                Self::run_device(&mut foundation_device, FOUNDATION_INBOUND.receiver()),
+                Self::run_device(device, DEVICE_INBOUND.receiver()),               
+            );                                                                     
+            let driver_fut = self.run_driver(&mut composition);
+```
+Next we wait for one of the two futures passed to `select` to complete.
+So what does `run_device` do?
+```rust
+    fn run_device<D: BluetoothMeshDevice>(                                      
+        device: &mut D,                                                         
+        receiver: InboundChannelReceiver,                                          
+    ) -> impl Future<Output = Result<(), ()>> + '_ {                               
+        device.run(DeviceContext::new(receiver, OUTBOUND.sender()))                
+    } 
+```
+`device.run` will end up in...
+
+
+TODO: figure out how to debug this using the instructions below. Might require
+disabling LTO.
+Lets debug this by opening OpenOCD in one terminal::
+```console
+$ openocd -f interface/cmsis-dap.cfg -f target/nrf51.cfg
+Open On-Chip Debugger 0.11.0-g610f137 (2022-05-06-14:16)
+Licensed under GNU GPL v2
+Info : Listening on port 6666 for tcl connections
+Info : Listening on port 4444 for telnet connections
+Info : Using CMSIS-DAPv2 interface with VID:PID=0x0d28:0x0204, serial=9904360258824e45005680040000004b000000009796990b
+Info : CMSIS-DAP: SWD  Supported
+Info : CMSIS-DAP: FW Version = 0255
+Info : CMSIS-DAP: Serial# = 9904360258824e45005680040000004b000000009796990b
+Info : CMSIS-DAP: Interface Initialised (SWD)
+Info : SWCLK/TCK = 1 SWDIO/TMS = 1 TDI = 0 TDO = 0 nTRST = 0 nRESET = 1
+Info : CMSIS-DAP: Interface ready
+Info : clock speed 1000 kHz
+Info : SWD DPIDR 0x2ba01477
+Info : nrf51.cpu: hardware has 6 breakpoints, 4 watchpoints
+Info : starting gdb server for nrf51.cpu on 3333
+Info : Listening on port 3333 for gdb connections
+```
+And then attach using rust-gdb:
+```console
+$ arm-none-eabi-gdb --args target/thumbv7em-none-eabihf/release/eclipsecon-device
+```
+
+### Composition Data
+Contains info about a node, like the elements it includes and the models it
+supports. This contains a company id, vendor productd id, ventor product version
+a field named CRPL (Count Replay Protection List?).
+
+#### CRPL (Count Replay Protection List?)
+Is a 16 bit-value which is the minium number of replay protection list entries
+that a the device has. This can be found in section 4.2.1 Composition Data of
+the Mesh Profile specification:
+```
+CRPL  Contains a 16-bit value representing the minimum number of replay
+      protection list entries in a device
+```
+I've 
+```rust
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "defmt", derive(defmt::Format))]
+pub struct Composition<X: Default = ()> {
+    pub(crate) cid: CompanyIdentifier,
+    pub(crate) pid: ProductIdentifier,
+    pub(crate) vid: VersionIdentifier,
+    pub(crate) crpl: u16, // Count Reply Protection List
+    pub(crate) features: Features,
+    pub(crate) elements: Vec<ElementDescriptor<X>, 4>,
+}
+```
+
+
+### BLE Mesh Replay protection
+If someone intercepts a message from a device to the network they could respond
+that message as it was encrypted with valid appkey/netkeys. This is called a
+replay attack and to protect against such attacks each element will increment
+the sequence number for each new message that is sends out. So each node that
+receives a message needs to store the latest sequence number is has seens from
+a node, and check it to avoid/drop messages that have already been seen.
+
+### Mesh Configuration Database format
+[mesh-configuration-database-profile-1-0](https://www.bluetooth.com/specifications/specs/mesh-configuration-database-profile-1-0)
+
+
+### Chrome
+To enable bluetooth in Chrome ensure that the bluetooth daemon is running (it
+might not be if you have been experimenting with ble mesh for example):
+```console
+$ sudo systemctl enable bluetooth
+$ sudo systemctl start bluetooth
+```
+Then in Chrome we have to enable bletooth permissions:
+```
+chrome://flags/#enable-web-bluetooth-new-permissions-backend
+```
+Then if you inspecte chrome://bluetooth-internals/#adapter hopefully things
+will be mostly green, at least `Initialized', `Present`, and `Powered`.
+
